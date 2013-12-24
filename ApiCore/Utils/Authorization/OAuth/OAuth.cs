@@ -20,8 +20,8 @@ namespace ApiCore.Utils.Authorization
         {
 			if (!string.IsNullOrEmpty(_email) && !string.IsNullOrEmpty(_pass))
 			{
-				var authHidden = new OAuthHidden();
-				authHidden.Authenticate(_email, _pass);
+				var authHidden = new OAuthHidden(_email, _pass);
+				authHidden.Authorize(appId, scope, display);
 				return authHidden.SessionData;
 			}
 

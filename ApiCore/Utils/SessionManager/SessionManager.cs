@@ -59,11 +59,14 @@ namespace ApiCore
             this.OnLog("Creating OAuth login wnd...");
 			OAuth auth = new OAuth(email, pass);
             
+#if !DEBUG
             try 
-            {
+#endif
+			{
                 this.OnLog("Authorization successed!");
                 return auth.Authorize(this.AppId, this.Scope, AuthDisplay.Popup.ToString());
             }
+#if !DEBUG
             catch(AuthorizationFailedException e)
             {
                 this.OnLog("Authorization failed: "+e.Message);
@@ -75,6 +78,7 @@ namespace ApiCore
                 return null;
             }
             return null;
+#endif
         }
         
         public void CloseSession()

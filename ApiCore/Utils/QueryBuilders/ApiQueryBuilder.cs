@@ -132,13 +132,20 @@ namespace ApiCore
 
                 foreach (KeyValuePair<string, string> rec in this.paramData)
                 {
-                    sb.Append(rec.Key + "=" + rec.Value + "&");
+					sb.Append(rec.Key);
+					sb.Append("=");
+					sb.Append(rec.Value);
+					sb.Append("&");
                 }
 
-                sb.Append("access_token=");
-                sb.Append(((OAuthSessionInfo)this.session).Token);
+                var oAuthSessionInfo = session as OAuthSessionInfo;
+	            if (oAuthSessionInfo != null)
+				{
+					sb.Append("access_token=");
+					sb.Append(oAuthSessionInfo.Token);
+				}
 
-                return sb.ToString();
+	            return sb.ToString();
             }
             return "";
         }
