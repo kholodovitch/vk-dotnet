@@ -8,3 +8,5 @@
 /*.sln
 *.suo
 *.pidb
+
+/Examples/AudioDownloader(OAuth)/bin
