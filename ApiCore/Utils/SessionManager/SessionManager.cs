@@ -46,13 +46,18 @@ namespace ApiCore
             if (this.Log != null)
             {
                 this.Log(this, msg);
-            }
-        }
+			}
+		}
 
-        public SessionInfo GetOAuthSession()
-        {
+		public SessionInfo GetOAuthSession()
+		{
+			return GetOAuthSession(null, null);
+		}
+
+		public SessionInfo GetOAuthSession(string email, string pass)
+		{
             this.OnLog("Creating OAuth login wnd...");
-            OAuth auth = new OAuth();
+			OAuth auth = new OAuth(email, pass);
             
             try 
             {
@@ -66,7 +71,7 @@ namespace ApiCore
             }
             catch(Exception e)
             {
-                this.OnLog("Authorization failed by unknown reason!");
+				this.OnLog(string.Format("Authorization failed by unknown reason! [{0}]", e.Message));
                 return null;
             }
             return null;

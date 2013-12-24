@@ -7,9 +7,25 @@ namespace ApiCore.Utils.Authorization
 {
     public class OAuth: IOAuthProvider
     {
-        public SessionInfo Authorize(int appId, string scope, string display)
+	    private readonly string _email;
+	    private readonly string _pass;
+
+	    public OAuth(string email, string pass)
+	    {
+		    _email = email;
+		    _pass = pass;
+	    }
+
+	    public SessionInfo Authorize(int appId, string scope, string display)
         {
-            OAuthWnd wnd = new OAuthWnd(appId, scope, display);
+			if (!string.IsNullOrEmpty(_email) && !string.IsNullOrEmpty(_pass))
+			{
+				var authHidden = new OAuthHidden();
+				authHidden.Authenticate(_email, _pass);
+				return authHidden.SessionData;
+			}
+
+		    OAuthWnd wnd = new OAuthWnd(appId, scope, display);
             wnd.ShowDialog();
             if (wnd.Authenticated)
                 return wnd.SessionData;
