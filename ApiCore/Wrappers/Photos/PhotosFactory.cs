@@ -40,7 +40,7 @@ namespace ApiCore.Photos
         private List<AlbumEntry> buildAlbumsList(XmlNode data)
         {
             XmlNodeList nodes = data.SelectNodes("response/album");
-            if (nodes.Count > 0)
+            if (nodes != null && nodes.Count > 0)
             {
                 List<AlbumEntry> albums = new List<AlbumEntry>();
                 foreach (XmlNode n in nodes)
@@ -52,44 +52,46 @@ namespace ApiCore.Photos
             return null;
         }
 
-        private PhotoEntryFull buildPhotoEntryFull(XmlNode node)
-        {
-            if (node != null)
-            {
-                XmlUtils.UseNode(node);
-                PhotoEntryFull photo = new PhotoEntryFull();
-                photo.Id = XmlUtils.Int("pid");
-                photo.AlbumId = XmlUtils.Int("aid");
-                photo.OwnerId = XmlUtils.Int("owner_id");
-                photo.Url = XmlUtils.String("src");
-                photo.UrlBig = XmlUtils.String("src_big");
-                photo.UrlSmall = XmlUtils.String("src_small");
-                photo.UrlXBig = XmlUtils.String("src_xbig");
-                photo.UrlXXBig = XmlUtils.String("src_xxbig");
-                photo.Text = XmlUtils.String("text");
-                photo.DateCreated = CommonUtils.FromUnixTime(XmlUtils.Int("created"));
-                return photo;
-            }
-            return null;
-        }
+		private PhotoEntryFull buildPhotoEntryFull(XmlNode node)
+		{
+			if (node == null)
+				return null;
 
-        private PhotoEntryShort buildPhotoEntryShort(XmlNode node)
-        {
-            if (node != null)
-            {
-                XmlUtils.UseNode(node);
-                PhotoEntryShort photo = new PhotoEntryShort();
-                photo.Id = XmlUtils.Int("pid");
-                photo.AlbumId = XmlUtils.Int("aid");
-                photo.OwnerId = XmlUtils.Int("owner_id");
-                photo.Url = XmlUtils.String("src");
-                photo.UrlBig = XmlUtils.String("src_big");
-                photo.UrlSmall = XmlUtils.String("src_small");
-                photo.DateCreated = CommonUtils.FromUnixTime(XmlUtils.Int("created"));
-                return photo;
-            }
-            return null;
-        }
+			var photo = new PhotoEntryFull
+				{
+					Id = XmlUtils.GetInt("pid", node),
+					AlbumId = XmlUtils.GetInt("aid", node),
+					OwnerId = XmlUtils.GetInt("owner_id", node),
+					Url = XmlUtils.GetString("src", node),
+					UrlBig = XmlUtils.GetString("src_big", node),
+					UrlSmall = XmlUtils.GetString("src_small", node),
+					UrlXBig = XmlUtils.GetString("src_xbig", node),
+					UrlXXBig = XmlUtils.GetString("src_xxbig", node),
+					UrlXXXBig = XmlUtils.GetString("src_xxxbig", node),
+					Width = XmlUtils.GetInt("width", node),
+					Height = XmlUtils.GetInt("height", node),
+					Text = XmlUtils.GetString("text", node),
+					DateCreated = CommonUtils.FromUnixTime(XmlUtils.GetInt("created", node))
+				};
+			return photo;
+		}
+
+		private PhotoEntryShort buildPhotoEntryShort(XmlNode node)
+		{
+			if (node == null) return null;
+
+			var photo = new PhotoEntryShort
+				{
+					Id = XmlUtils.GetInt("pid", node),
+					AlbumId = XmlUtils.GetInt("aid", node),
+					OwnerId = XmlUtils.GetInt("owner_id", node),
+					Url = XmlUtils.GetString("src", node),
+					UrlBig = XmlUtils.GetString("src_big", node),
+					UrlSmall = XmlUtils.GetString("src_small", node),
+					DateCreated = CommonUtils.FromUnixTime(XmlUtils.GetInt("created", node))
+				};
+			return photo;
+		}
 
         private List<PhotoEntryFull> buildPhotosListFull(XmlNode data)
         {
@@ -231,6 +233,14 @@ namespace ApiCore.Photos
 
             return this.buildPhotosListFull(result);
         }
+
+		public List<PhotoEntryFull> GetProfile(int? userId, int? count, int? offset, bool rev)
+		{
+			Manager.Method("photos.getProfile", new object[] { "uid", userId, "limit", count, "offset", offset, "rev", rev ? 1 : 0 });
+			XmlNode result = this.Manager.Execute().GetResponseXml();
+
+			return this.buildPhotosListFull(result);
+		}
 
         public AlbumEntry CreateAlbum(string title, AlbumAccessPrivacy access, AlbumCommentPrivacy comment, string description)
         {

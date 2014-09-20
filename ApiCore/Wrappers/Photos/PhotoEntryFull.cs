@@ -25,8 +25,11 @@ namespace ApiCore.Photos
         public string Url;
         public string UrlBig;
         public string UrlSmall;
-        public string UrlXBig;
-        public string UrlXXBig;
+		public string UrlXBig;
+		public string UrlXXBig;
+		public string UrlXXXBig;
+		public int Width;
+		public int Height;
         public string Text;
         public DateTime DateCreated;
 
