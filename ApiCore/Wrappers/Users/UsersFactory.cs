@@ -61,7 +61,6 @@ namespace ApiCore.Wrappers.Users
 
 			XmlNode result = Manager.Execute().GetResponseXml();
 
-			XmlUtils.UseNode(result);
 			return buildList(result);
 		}
 
@@ -70,29 +69,27 @@ namespace ApiCore.Wrappers.Users
 			if (node == null)
 				return null;
 
-			XmlUtils.UseNode(node);
-
 			var u = new UserEntry
 				{
-					Id = XmlUtils.Int("uid"),
-					FisrtName = XmlUtils.String("first_name"),
-					LastName = XmlUtils.String("last_name"),
-					Sex = (FriendSex) XmlUtils.Int("sex"),
-					NickName = XmlUtils.String("nickname"),
-					ScreenName = XmlUtils.String("screen_name"),
-					Birthday = XmlUtils.String("bdate"),
-					CityId = XmlUtils.Int("city"),
-					CountryId = XmlUtils.Int("country"),
-					Photo50 = XmlUtils.String("photo_50"),
-					Photo100 = XmlUtils.String("photo_100"),
-					Photo200Orig = XmlUtils.String("photo_200_orig"),
-					HasMobile = XmlUtils.Bool("has_mobile"),
-					Online = XmlUtils.Bool("online"),
-					CanPost = XmlUtils.Bool("can_post"),
-					CanSeeAllPosts = XmlUtils.Bool("can_see_all_posts"),
-					CanWritePrivateMessage = XmlUtils.Bool("can_write_private_message"),
-					Status = XmlUtils.String("status"),
-					//LastSeen = XmlUtils.String("last_seen"),
+					Id = XmlUtils.GetInt("uid", node),
+					FisrtName = XmlUtils.GetString("first_name", node),
+					LastName = XmlUtils.GetString("last_name", node),
+					Sex = (FriendSex)XmlUtils.GetInt("sex", node),
+					NickName = XmlUtils.GetString("nickname", node),
+					ScreenName = XmlUtils.GetString("screen_name", node),
+					Birthday = XmlUtils.GetString("bdate", node),
+					CityId = XmlUtils.GetInt("city", node),
+					CountryId = XmlUtils.GetInt("country", node),
+					Photo50 = XmlUtils.GetString("photo_50", node),
+					Photo100 = XmlUtils.GetString("photo_100", node),
+					Photo200Orig = XmlUtils.GetString("photo_200_orig", node),
+					HasMobile = XmlUtils.GetBool("has_mobile", node),
+					Online = XmlUtils.GetBool("online", node),
+					CanPost = XmlUtils.GetBool("can_post", node),
+					CanSeeAllPosts = XmlUtils.GetBool("can_see_all_posts", node),
+					CanWritePrivateMessage = XmlUtils.GetBool("can_write_private_message", node),
+					Status = XmlUtils.GetString("status", node),
+					//LastSeen = XmlUtils.GetString("last_seen", node),
 				};
 			return u;
 		}

@@ -17,7 +17,13 @@ namespace ApiCore
         {
             XmlUtils.node = node;
         }
-        
+
+		public static string GetString(string nodeName, XmlNode innerNode)
+		{
+			XmlNode selectSingleNode = innerNode.SelectSingleNode(nodeName);
+			return selectSingleNode != null ? selectSingleNode.InnerText.Replace("&lt;br&gt;", "\r\n") : null;
+		}
+
         /// <summary>
         /// Gets the string value from node
         /// </summary>
@@ -25,13 +31,7 @@ namespace ApiCore
         /// <returns>string</returns>
         public static string String(string nodeName)
         {
-            if (XmlUtils.node.SelectSingleNode(nodeName) != null)
-            {
-                return XmlUtils.node.SelectSingleNode(nodeName).InnerText
-                                                                .Replace("&lt;br&gt;", "\r\n");
-
-            }
-            return "";
+			return GetString(nodeName, node);
         }
 
         public static string StringVal()
@@ -43,6 +43,12 @@ namespace ApiCore
             return "";
         }
 
+		public static int GetInt(string nodeName, XmlNode innerNode)
+		{
+			XmlNode singleNode = innerNode.SelectSingleNode(nodeName);
+			return singleNode != null ? Convert.ToInt32(singleNode.InnerText) : -1;
+		}
+
         /// <summary>
         /// Gets the int value from node
         /// </summary>
@@ -50,11 +56,7 @@ namespace ApiCore
         /// <returns>int</returns>
         public static int Int(string nodeName)
         {
-            if (XmlUtils.node.SelectSingleNode(nodeName) != null)
-            {
-                return Convert.ToInt32(XmlUtils.node.SelectSingleNode(nodeName).InnerText);
-            }
-            return -1;
+			return GetInt(nodeName, node);
         }
 
         public static int IntVal()
@@ -70,15 +72,19 @@ namespace ApiCore
         /// Gets double value from node
         /// </summary>
         /// <param name="nodeName">node</param>
+        /// <param name="innerNode"></param>
         /// <returns>double</returns>
-        public static double Double(string nodeName)
+        public static double GetDouble(string nodeName, XmlNode innerNode)
         {
-            if (XmlUtils.node.SelectSingleNode(nodeName) != null)
-            {
-                return Convert.ToDouble(XmlUtils.node.SelectSingleNode(nodeName).InnerText);
-            }
-            return -1f;
+		    XmlNode singleNode = innerNode.SelectSingleNode(nodeName);
+		    return singleNode != null ? Convert.ToDouble(singleNode.InnerText) : -1f;
         }
+
+		public static float GetFloat(string nodeName, XmlNode innerNode)
+		{
+			XmlNode singleNode = innerNode.SelectSingleNode(nodeName);
+			return singleNode != null ? float.Parse(singleNode.InnerText) : -1f;
+		}
 
         /// <summary>
         /// Gets float value from node
@@ -87,11 +93,7 @@ namespace ApiCore
         /// <returns>float</returns>
         public static float Float(string nodeName)
         {
-            if (XmlUtils.node.SelectSingleNode(nodeName) != null)
-            {
-                return float.Parse(XmlUtils.node.SelectSingleNode(nodeName).InnerText);
-            }
-            return -1f;
+            return GetFloat(nodeName, node);
         }
 
         public static float FloatVal()
@@ -103,6 +105,12 @@ namespace ApiCore
             return -1f;
         }
 
+		public static bool GetBool(string nodeName, XmlNode innerNode)
+		{
+			XmlNode singleNode = innerNode.SelectSingleNode(nodeName);
+			return singleNode != null && singleNode.InnerText == "1";
+		}
+
         /// <summary>
         /// Gets the bool value from node
         /// </summary>
@@ -110,11 +118,7 @@ namespace ApiCore
         /// <returns>true or false</returns>
         public static bool Bool(string nodeName)
         {
-            if (XmlUtils.node.SelectSingleNode(nodeName) != null)
-            {
-                return ((XmlUtils.node.SelectSingleNode(nodeName).InnerText == "1") ? true : false);
-            }
-            return false;
+            return GetBool(nodeName, node);
         }
 
         public static bool BoolVal()
