@@ -72,7 +72,7 @@ namespace ApiCore.Wrappers.Users
 			var u = new UserEntry
 				{
 					Id = XmlUtils.GetInt("uid", node),
-					FisrtName = XmlUtils.GetString("first_name", node),
+					FirstName = XmlUtils.GetString("first_name", node),
 					LastName = XmlUtils.GetString("last_name", node),
 					Sex = (FriendSex)XmlUtils.GetInt("sex", node),
 					NickName = XmlUtils.GetString("nickname", node),
