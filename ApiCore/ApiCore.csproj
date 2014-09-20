@@ -136,6 +136,11 @@
     <Compile Include="Wrappers\Storage\StorageResult.cs" />
     <Compile Include="Wrappers\Subscriptions\SubscriptionsFactory.cs" />
     <Compile Include="Wrappers\Subscriptions\SubscriptionsInfo.cs" />
+    <Compile Include="Wrappers\Users\UserEntry.cs" />
+    <Compile Include="Wrappers\Users\UserSearchField.cs" />
+    <Compile Include="Wrappers\Users\UserSearchParams.cs" />
+    <Compile Include="Wrappers\Users\UsersFactory.cs" />
+    <Compile Include="Wrappers\Users\UserSortOrder.cs" />
     <Compile Include="Wrappers\Wall\WallEntry.cs" />
     <Compile Include="Wrappers\Wall\WallEntryFilter.cs" />
     <Compile Include="Wrappers\Wall\WallFactory.cs" />
