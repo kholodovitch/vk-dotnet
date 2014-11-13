@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections;
 using System.Text;
+using System.Threading;
 using System.Xml;
 using System.ComponentModel;
 using ApiCore.Handlers;
@@ -340,7 +341,17 @@ namespace ApiCore
         /// <returns>himself</returns>
         public ApiManager Execute()
         {
-            return this.getResponse();
+            try
+            {
+                return this.getResponse();
+            }
+            catch (ApiRequestErrorException e)
+            {
+                if (e.Code != (int) ErrorCodes.TooManyRequests)
+                    throw;
+
+                return this;
+            }
         }
 
         public ApiManager ExecuteFromCacheString(string cacheString)
@@ -416,17 +427,15 @@ namespace ApiCore
             }
             catch (ApiRequestErrorException e)
             {
-                if (e.Code == (int)ErrorCodes.CapthaRequired)
+                if (e.Code != (int) ErrorCodes.CapthaRequired)
+                    throw;
+                
+                if (!this.isCancelled)
                 {
-                    if (!this.isCancelled)
-                    {
-                        XmlUtils.UseNode(this.apiResponseXml.SelectSingleNode("/error"));
-                        this.CapthaRequired(XmlUtils.String("captcha_img"), XmlUtils.String("captcha_sid"));
-                    }
-                    //return this;
+                    XmlUtils.UseNode(this.apiResponseXml.SelectSingleNode("/error"));
+                    this.CapthaRequired(XmlUtils.String("captcha_img"), XmlUtils.String("captcha_sid"));
                 }
-                else
-                    throw new ApiRequestErrorException(e.Message, e.Code, e.ParamsPassed);
+                //return this;
             }
             return this;
         }
@@ -449,12 +458,29 @@ namespace ApiCore
                     xdoc.AppendChild(temporary);
                     return xdoc;
                 }
-                else
-                {
-                    throw new Exception("Response string is empty!");
-                }
+                ProcessError();
+                throw new Exception("Response string is empty!");
             }
             return null;
+        }
+
+        private void ProcessError()
+        {
+            XmlNode isError = this.apiResponseXml.SelectSingleNode("/error");
+            if (isError == null)
+                return;
+            int code = Convert.ToInt32(isError.SelectSingleNode("error_code").InnerText);
+            string msg = isError.SelectSingleNode("error_msg").InnerText;
+            Hashtable ht = new Hashtable();
+            XmlNodeList pparams = isError.SelectNodes("request_params/param");
+            foreach (XmlNode n in pparams)
+            {
+                ht[n.SelectSingleNode("key").InnerText.ToString()] =
+                    n.SelectSingleNode("value").InnerText.ToString();
+            }
+
+            this.RequestCompleted(RequestResult.Error);
+            throw new ApiRequestErrorException(msg, code, ht);
         }
 
         public string GetResponseString()
