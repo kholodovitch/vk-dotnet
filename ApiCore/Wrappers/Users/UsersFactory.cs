@@ -46,6 +46,15 @@ namespace ApiCore.Wrappers.Users
 
 				Manager.Params("sex", searchParams.Sex);
 
+				if (searchParams.BirthYear != 0)
+					Manager.Params("birth_year", searchParams.BirthYear);
+
+				if (searchParams.BirthMonth != 0)
+					Manager.Params("birth_month", searchParams.BirthMonth);
+
+				if (searchParams.BirthDay != 0)
+					Manager.Params("birth_day", searchParams.BirthDay);
+
 				if (searchParams.Status != null)
 					Manager.Params("status", searchParams.Status.Value);
 
